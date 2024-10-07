@@ -19,6 +19,8 @@ jobs:
         dotnet-version: 8.0.x
     - name: Change to src directory
       run: cd ./src
+    - name: Print Directory
+      run: ls -la
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
