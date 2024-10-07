@@ -13,6 +13,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.10.2
+      with:
+        versionSpec: '5.x'
+    - name: Determine Version
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.10.2
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
@@ -22,10 +31,13 @@ jobs:
       run: dotnet restore
     - name: Build
       working-directory: ./src
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore -p:Version=${{ steps.gitversion.outputs.nugetversion }}
+    - name: Publish
+      working-directory: ./src
+      run: dotnet publish --no-restore -p:Version=${{ steps.gitversion.outputs.nugetversion }}
     - name: Pack
       working-directory: ./src
-      run: dotnet pack --configuration Release --no-build --output ../nupkg
+      run: dotnet pack --configuration Release --no-build --output ../nupkg -p:Version=${{ steps.gitversion.outputs.nugetversion }}
     - name: Push to NuGet
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: dotnet nuget push ./nupkg/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
