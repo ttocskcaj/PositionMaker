@@ -9,6 +9,7 @@
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>position-maker</ToolCommandName>
         <PackageOutputPath>./nupkg</PackageOutputPath>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
